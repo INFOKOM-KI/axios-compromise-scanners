@@ -19,7 +19,7 @@ Performs a general security scan checking for:
 - Global npm/yarn/pnpm packages
 
 ```bash
-./scan1.sh [path axios]
+./scan1.sh [path axiosnya]
 ```
 
 Default path is `$HOME`. The script generates a JSON report (`scan_report_YYYYMMDD_HHMMSS.json`) in the current directory.
@@ -35,8 +35,24 @@ Performs a forensic scan targeting specific UNC1069 indicators:
 - Deep lockfile audit for `plain-crypto-js` v4.2.1
 
 ```bash
-./scan2.sh [path axios]
+./scan2.sh [path axiosnya]
 ```
+
+### More Scan (`scan3.sh`)
+
+Performs a comprehensive scan combining multiple checks:
+- Filesystem IOC & artifacts scan (package-lock, node_modules, package.md)
+- Compromised axios version detection (1.14.1, 0.30.4)
+- Malicious package detection (`plain-crypto-js`)
+- Stage 2 payload check (WAVESHAPER.V2)
+- Windows masquerading detection (wt.exe as PowerShell)
+- Network & persistence checks (DNS resolution, crontab)
+
+```bash
+./scan3.sh [path axiosnya]
+```
+
+Default path is `$HOME`. Displays scan duration and provides remediation steps when issues are found.
 
 ## Requirements
 
@@ -47,12 +63,12 @@ Performs a forensic scan targeting specific UNC1069 indicators:
 
 ## Output
 
-Both scripts display colored output to the terminal:
-- `[!!!]` = Found issue (red)
-- `[!]` = Warning (yellow)
-- `[✓]` = Safe/clear (green)
+All scripts display colored output to the terminal:
+- `[!]` / `[!!!]` = Detected issue (red)
+- `[i]` = Info (cyan)
+- `[✓]` = Clean (green)
 
-`scan1.sh` additionally creates a JSON report file with all detected issues.
+`scan1.sh` additionally creates a JSON report file with all detected issues. `scan3.sh` displays scan duration and provides specific remediation steps.
 
 ## Indicators of Compromise Detected
 
@@ -69,9 +85,10 @@ Both scripts display colored output to the terminal:
 If issues are found:
 1. Isolate the affected host from the network
 2. Remove malicious packages: `npm uninstall plain-crypto-js`
-3. Delete suspicious files and persistence mechanisms
-4. Rotate all credentials (API keys, SSH keys, tokens)
-5. Review audit logs for lateral movement
+3. Re-install axios to safe version (1.13.2 or 1.14.0)
+4. Delete suspicious files and persistence mechanisms
+5. Rotate all credentials (API keys, SSH keys, tokens, environment secrets)
+6. Review audit logs for lateral movement
 
 ## Author
 
